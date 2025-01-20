@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero text-center py-5 bg-primary text-white">
+    <div class="hero-overlay"></div> <!-- Overlay -->
+    <div class="hero-content container">
+        <h1 class="hero-title display-4">Our Rooms</h1>
+        <p class="hero-subtitle lead">Discover your perfect stay with us</p>
+    </div>
+</section>
+
+<section class="rooms-container py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for room in rooms %}
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-img-top">
+                        {% if room.image %}
+                        <img src="{{ room.image.url }}" alt="{{ room.name }}" class="img-fluid rounded-top" style="object-fit: cover; width: 100%;">
+                        {% else %}
+                        <img src="{% static 'default_room.jpg' %}" alt="No Image Available" class="img-fluid rounded-top" style="object-fit: cover; width: 100%;">
+                        {% endif %}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">{{ room.name }}</h5>
+                        <p class="card-text text-muted">{{ room.description|truncatewords:15 }}</p>
+                        <p class="card-text fw-bold">Price: Rp{{ room.price }}</p>
+                        <a href="{% url 'homestay:room_detail' room.id %}" class="btn btn-primary btn-sm">Lihat Detail</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination Controls -->
+        <div class="d-flex justify-content-center mt-4">
+            {% if rooms.has_previous %}
+                <a href="?page=1&q={{ request.GET.q }}" class="btn btn-secondary">First</a>
+                <a href="?page={{ rooms.previous_page_number }}&q={{ request.GET.q }}" class="btn btn-secondary">Previous</a>
+            {% endif %}
+            <span class="mx-2">Page {{ rooms.number }} of {{ rooms.paginator.num_pages }}</span>
+            {% if rooms.has_next %}
+                <a href="?page={{ rooms.next_page_number }}&q={{ request.GET.q }}" class="btn btn-secondary">Next</a>
+                <a href="?page={{ rooms.paginator.num_pages }}&q={{ request.GET.q }}" class="btn btn-secondary">Last</a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

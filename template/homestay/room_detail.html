@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail Kamar - {{ room.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-8">
+            <!-- Menampilkan nama kamar dan tipe -->
+            <h1 class="mb-4">{{ room.name }}</h1>
+            <p class="lead"><strong>Tipe:</strong> {{ room.room_type }}</p>
+            <p class="lead"><strong>Kapasitas:</strong> {{ room.capacity }} orang</p>
+            <p class="lead"><strong>Harga per malam:</strong> Rp{{ room.price|floatformat:0 }}</p>
+
+            <!-- Deskripsi kamar -->
+            <p><strong>Deskripsi:</strong> {{ room.description }}</p>
+
+            <!-- Fasilitas kamar -->
+            <h3 class="mb-3">Fasilitas:</h3>
+            <ul class="list-group mb-4">
+                {% for facility in room.facilities.all %}
+                    <li class="list-group-item">{{ facility }}</li>
+                {% endfor %}
+            </ul>
+
+            <!-- Gambar kamar -->
+            <h3 class="mb-3">Gambar Kamar:</h3>
+            {% if room.image %}
+                <img src="{{ room.image.url }}" alt="Room Image" class="img-fluid rounded shadow mb-4">
+            {% else %}
+                <p>No image available.</p>
+            {% endif %}
+
+            <!-- Tombol Kembali ke Daftar Kamar -->
+            <a href="{% url 'homestay:room_list' %}" class="btn btn-primary btn-lg">Kembali ke Daftar Kamar</a>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Menampilkan rekomendasi kamar lain -->
+            <h3 class="mb-4">Kamar Lainnya yang Tersedia</h3>
+            <ul class="list-group">
+                {% for other_room in other_rooms %}
+                    <li class="list-group-item">
+                        <a href="{% url 'homestay:room_detail' pk=other_room.pk %}" class="text-decoration-none">{{ other_room.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

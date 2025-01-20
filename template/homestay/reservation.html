@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="hero">
+    <div class="hero-overlay">
+        <h1 class="hero-title">Welcome to Our Hotel</h1>
+        <p class="hero-subtitle">Book your stay and enjoy luxurious comfort</p>
+        <div>
+            <a href="#reservation" class="btn btn-primary">Make a Reservation</a>
+            <a href="#features" class="btn btn-secondary">Learn More</a>
+        </div>
+    </div>
+</div>
+
+<!-- Reservation Form Section -->
+<div id="reservation" class="container py-5 mt-5"> <!-- Added an ID for smooth scrolling -->
+    <h2 class="text-center mb-4">Reservation</h2>
+    <form action="{% url 'homestay:reservation' %}" method="post" class="reservation-form">
+        {% csrf_token %}
+        <div class="form-group mb-3">
+            <label for="name">Your Name</label>
+            <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group mb-3">
+            <label for="email">Your Email</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+        <div class="form-row row mb-3">
+            <div class="col-md-6">
+                <label for="checkin">Check-in Date</label>
+                <input type="date" name="checkin" id="checkin" class="form-control" required>
+            </div>
+            <div class="col-md-6">
+                <label for="checkout">Check-out Date</label>
+                <input type="date" name="checkout" id="checkout" class="form-control" required>
+            </div>
+        </div>
+        <div class="form-group mb-3">
+            <label for="room">Select Room</label>
+            <select name="room" id="room" class="form-control" required>
+                {% for room in rooms %}
+                <option value="{{ room.pk }}">{{ room.name }} - Rp{{ room.price }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary btn-lg">Reserve Now</button>
+        </div>
+    </form>
+</div>
+
+{% endblock %}

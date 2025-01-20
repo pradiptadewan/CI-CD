@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Detail Menu Makanan - {{ menu_item.name }}{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <!-- Detail menu makanan -->
+        <div class="col-md-8">
+            <h1 class="mb-4">{{ menu_item.name }}</h1>
+            <p class="lead"><strong>Harga:</strong> Rp{{ menu_item.price|floatformat:0 }}</p>
+            <p><strong>Deskripsi:</strong> {{ menu_item.description }}</p>
+
+            <!-- Gambar menu makanan -->
+            <h3 class="mb-4">Gambar Menu:</h3>
+            {% if menu_item.image %}
+                <img src="{{ menu_item.image.url }}" alt="Menu Image" class="img-fluid rounded shadow mb-4">
+            {% else %}
+                <p>No image available.</p>
+            {% endif %}
+
+            <!-- Tombol kembali ke daftar menu -->
+            <a href="{% url 'myresto:resto_detail' pk=menu_item.resto.pk %}" class="btn btn-primary btn-lg">Kembali ke Detail Resto</a>
+        </div>
+
+        <div class="col-md-4">
+            <!-- Menampilkan menu lainnya dari resto yang sama -->
+            <h3 class="mb-4">Menu Lainnya dari {{ menu_item.resto.name }}</h3>
+            <ul class="list-group">
+                {% for item in other_menu_items %}
+                    <li class="list-group-item">
+                        <a href="{% url 'myresto:menu_item_detail' pk=item.pk %}" class="text-decoration-none">{{ item.name }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}
