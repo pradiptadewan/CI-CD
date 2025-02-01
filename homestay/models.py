@@ -40,12 +40,20 @@ class Booking(models.Model):
         return f"{self.customer_name} - {self.room.name}"
 
 
-class MenuItem(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=10, decimal_places=2)
-    image = models.ImageField(upload_to='menu_images/', blank=True, null=True)
+class Wisata(models.Model):
+    judul = models.CharField(max_length=200)
+    deskripsi = models.TextField()
+    harga_tiket_domestik = models.DecimalField(max_digits=10, decimal_places=2)
+    harga_tiket_mancanegara = models.DecimalField(max_digits=10, decimal_places=2)
+    jam_buka = models.CharField(max_length=100)
 
     def __str__(self):
-        return self.name
+        return self.judul
 
+class FotoWisata(models.Model):
+    wisata = models.ForeignKey(Wisata, related_name='galeri_foto', on_delete=models.CASCADE)
+    gambar = models.ImageField(upload_to='galeri/')
+    deskripsi = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"Foto dari {self.wisata.judul}"

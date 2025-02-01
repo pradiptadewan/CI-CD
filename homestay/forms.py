@@ -6,6 +6,10 @@ class ContactForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'placeholder': 'Email Anda'}))
     message = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Pesan Anda'}))
 
+    def save(self):
+        pass
+
+
 class ReservationForm(forms.ModelForm):
     class Meta:
         model = Booking

@@ -4,33 +4,52 @@
 {% block content %}
 
 <div class="hero">
+    <div class="slideshow-container">
+        <div class="hero-slide" style="background-image: url('{% static "image/1.png" %}');"></div>
+        <div class="hero-slide" style="background-image: url('{% static "image/2.png" %}');"></div>
+        <div class="hero-slide" style="background-image: url('{% static "image/3.png" %}');"></div>
+    </div>
     <div class="hero-overlay">
-        <h1 class="hero-title animate-fade-in">Joglo Dhepis Borobudur</h1>
+        <h1 class="hero-title-1 animate-fade-in">Joglo Dhepis Borobudur</h1>
         <p class="hero-subtitle animate-fade-in">Homestay dan Resto murah di Borobudur, Magelang</p>
         <a href="{% url 'homestay:room_list' %}" class="btn btn-primary animate-fade-in">HOMESTAY</a>
-        <a href="{% url 'myresto:resto_list' %}" class="btn btn-secondary animate-fade-in">RESTO JOGLO</a>
+        <a href="{% url 'myresto:restaurant_list' %}" class="btn btn-secondary animate-fade-in">RESTO JOGLO</a>
     </div>
 </div>
 
 <div class="content">
-    <h2 class="animate-slide-up">Why Choose Us?</h2>
-    <p class="animate-slide-up">Experience unparalleled comfort, exceptional service, and exquisite dining options at Joglo Dhepis.</p>
+    <h2 class="animate-slide-up">Mengapa Memilih Kami?</h2>
+    <p class="animate-slide-up">Nikmati kenyamanan tiada tara, pelayanan istimewa, dan pilihan kuliner lezat di Joglo Dhepis.</p>
+
+    <!-- Informasi Resto -->
     <div class="features">
-        <div class="feature animate-zoom-in">
-            <img src="{% static 'image/bg-resto.jpeg' %}" alt="Luxury Rooms">
-            <h3>Luxury Rooms</h3>
-            <p>Elegantly designed and fully equipped rooms for a premium stay.</p>
+
+
+        <!-- Keunggulan Homestay -->
+        <div class="feature animate-slide-up">
+            <img src="{% static 'image/4.png' %}" alt="Keunggulan Homestay">
+            <h3>Keunggulan Homestay</h3>
+            <p>Kamar homestay yang nyaman dan fasilitas lengkap untuk keluarga Anda.</p>
+            <a href="{% url 'homestay:room_list' %}" class="btn btn-primary">Detail</a>
         </div>
-        <div class="feature animate-zoom-in">
-            <img src="{% static 'image/bg2.jpeg' %}" alt="Fine Dining">
-            <h3>Fine Dining</h3>
-            <p>Savor world-class cuisines crafted by our top chefs.</p>
+
+        <div class="feature animate-slide-up">
+            <img src="{% static 'image/3.png' %}" alt="Restoran Joglo">
+            <h3>Restoran Joglo</h3>
+            <p>Rasakan cita rasa kuliner lezat dengan suasana khas Joglo yang nyaman.</p>
+            <a href="{% url 'myresto:restaurant_list' %}" class="btn btn-primary">Detail</a>
         </div>
-        <div class="feature animate-zoom-in">
-            <img src="{% static 'image/bg2.jpeg' %}" alt="Spa & Wellness">
-            <h3>Spa & Wellness</h3>
-            <p>Rejuvenate your senses with our state-of-the-art spa facilities.</p>
+
+        <!-- Wisata Dekat Homestay -->
+        <div class="feature animate-slide-up">
+            <img src="{% static 'image/brbd.jpeg' %}" alt="Wisata Dekat">
+            <h3>Wisata Dekat Homestay</h3>
+            <p>Temukan berbagai tempat wisata menarik di sekitar homestay kami.</p>
+            <a href="{% url 'homestay:wisata_list' %}" class="btn btn-primary">Detail</a>
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/script.js' %}"></script>
+
 {% endblock %}

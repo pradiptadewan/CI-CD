@@ -1,9 +1,30 @@
+
+.hero-slide {
+    animation: fadeSlide 1.5s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  50% { transform: translateX(10px); }
+  75% { transform: translateX(-10px); }
+  100% { transform: translateX(0); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+
+
+
+
 /* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Merriweather', serif;
 }
 
 /* Body */
@@ -15,6 +36,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    animation: moveGradient 10s ease infinite;
 }
 
 /* Header */
@@ -130,21 +152,59 @@ header .logo {
     transform: scale(1.1);
 }
 
+.hero-overlay .btn {
+    width: 80%;
+    max-width: 300px;
+    padding: 12px;
+    font-size: 1.1rem;
+    text-align: center;
+    margin-bottom: 15px; /* Menambahkan jarak antar tombol */
+}
+
 /* Hero Section */
 .hero {
     position: relative;
-    background: url('/static/image/bg2.jpeg') no-repeat center center/cover;
     height: 100vh;
     color: white;
     text-align: center;
     display: flex;
     justify-content: center;
     align-items: center;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: background 2s ease-in-out;
+}
+
+  .slideshow-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+    }
+
+   .hero-slide {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        opacity: 0;
+        transition: opacity 1s ease-in-out, transform 1s ease-in-out;;
+    }
+
+    .hero-slide.active {
+        opacity: 1;
+        animation: fadeScale 1.5s ease-in-out;
+
+    }
+
+    .hero-slide.fade-out {
+    opacity: 0;
 }
 
 .hero-overlay {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     color: white;
     width: 100%;
     height: 100%;
@@ -153,23 +213,35 @@ header .logo {
     justify-content: center;
     align-items: center;
     position: absolute;
+    padding: 20px;
+    transition: transform 0.2s ease-out;
 }
 
 .hero-content {
     position: relative;
     z-index: 1;
+    animation: zoomFade 1.5s ease-in-out;
 }
 
 .hero-title {
-    font-size: 4rem;
+    font-size: 3rem;
     font-weight: bold;
     margin-bottom: 15px;
     letter-spacing: 2px;
+    animation: shake 0.8s ease infinite;
+}
+
+.hero-title-1 {
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    animation: shake 0.8s ease infinite;
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
-    margin-bottom: 30px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
 }
 
 /* Content Section */
@@ -216,7 +288,8 @@ header .logo {
 
 .feature img {
     width: 100%;
-    height: auto;
+    height: 200px;
+    object-fit: cover;
     border-radius: 10px;
     margin-bottom: 20px;
 }
@@ -267,94 +340,228 @@ footer .social-icons a:hover {
     cursor: pointer;
 }
 
+/* Menambahkan kelas untuk animasi slide-up */
+.animate-slide-up {
+    opacity: 0; /* Awalnya elemen tersembunyi */
+    transform: translateY(50px); /* Elemen berada di bawah dari posisi normal */
+    transition: opacity 0.5s ease, transform 0.5s ease; /* Transisi untuk opacity dan transform */
+}
+
+.animate-slide-up.visible {
+    opacity: 1; /* Menampilkan elemen */
+    transform: translateY(0); /* Mengembalikan elemen ke posisi semula */
+}
+
+
+
 /* Responsive Design */
 @media (max-width: 768px) {
 
-     .navbar {
-        display: none;
-        width: 100%;
-        flex-direction: column;
-        gap: 20px;
-        margin-top: 10px;
-    }
+    .navbar {
+    position: fixed;
+    top: 75px;
+    right: -100%;
+    width: 100%;
+    height: 60%;
+    background: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    padding: 10px;
+    transition: right 0.5s ease-in-out;
+    z-index: 999;
+}
 
     .navbar.active {
-        display: flex;
+        right: 0;
     }
 
     .menu-toggle {
         display: block;
         position: absolute;
-        right: 30px;
-        top: 20px;
+        right: 15px;
+        top: 15px;
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .menu-toggle:hover {
+        transform: scale(1.1);
     }
 
     .navbar a {
         font-size: 1.2em;
-        padding: 10px;
-    }
-
-    .hero-title {
-        font-size: 3rem;
-    }
-
-    header {
-        flex-direction: column;
+        padding: 12px;
+        color: white;
         text-align: center;
+        transition: background 0.3s ease-in-out;
+    }
+
+    .navbar a:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+    }
+
+    /* Hero Section */
+    .hero {
+        background-size: cover;
+        background-position: center;
+        height: 70vh;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        animation: fadeIn 1s ease-in-out;
+        transition: background 0.3s ease-in-out;
+    }
+
+    /* Gradient Overlay */
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1;
+        pointer-events: none;
+        transition: background 0.3s ease-in-out;
     }
 
     .hero-title {
-        font-size: 3rem;
+        font-size: 2rem;
+        position: relative;
+        z-index: 2;
+        color: white;
+    }
+
+    .hero-title-1 {
+        font-size: 2rem;
+        position: relative;
+        z-index: 2;
+        color: white;
+        padding-top: 100px;
     }
 
     .hero-subtitle {
-        font-size: 1.2rem;
+        font-size: 1rem;
+        position: relative;
+        z-index: 2;
+        color: white;
     }
 
+    .hero-overlay .btn {
+        width: 85%;
+        font-size: 1rem;
+        padding: 12px;
+        margin-top: 15px;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Animasi Fade-in */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+    .animate-fade-in {
+    animation: fadeIn 1s ease forwards;
+}
+
+    /* Mengaplikasikan animasi slide up */
+@keyframes slideUp {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-slide-up {
+    opacity: 0; /* Awalnya elemen tersembunyi */
+    transform: translateY(50px); /* Elemen berada di bawah dari posisi normal */
+    animation: slideUp 0.7s ease forwards;
+}
+
+    /* Header */
+    header {
+        flex-direction: column;
+        text-align: center;
+        padding: 15px;
+    }
+
+    /* Navbar Styling */
     .navbar-nav {
         text-align: center;
     }
 
-    .navbar-toggler {
-        border: none;
-        background-color: transparent;
-    }
-
-    .navbar-toggler-icon {
-        background-image: url('data:image/svg+xml,%3csvg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30"%3e%3cpath stroke="rgba(255, 255, 255, 0.7)" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h20M5 15h20M5 23h20"%3e%3c/path%3e%3c/svg%3e');
-    }
-
-    .navbar-collapse {
-        text-align: center;
-    }
-
-    .navbar-nav .nav-item {
-        margin-bottom: 10px;
-    }
-
+    /* Features Section */
     .features {
         flex-direction: column;
         align-items: center;
     }
 
     .feature {
-        width: 80%;
-        margin-bottom: 30px;
+        width: 90%;
+        margin-bottom: 20px;
+        padding: 15px;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .feature:hover {
+        transform: scale(1.05);
     }
 
     .btn {
-        width: 200px;
+        width: 100%;
+        margin-top: 10px;
     }
 
     .btn-primaryR {
         display: none;
     }
 
+    /* Footer */
     footer {
-        padding: 20px 10px;
+        padding: 15px 10px;
+        text-align: center;
+        background: #222;
+        color: white;
     }
 
     footer .social-icons a {
-        font-size: 1.2rem;
+        font-size: 1.6rem;
+        margin: 0 12px;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    footer .social-icons a:hover {
+        transform: scale(1.2);
     }
 }

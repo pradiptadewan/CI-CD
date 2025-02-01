@@ -15,7 +15,7 @@
         <nav class="navbar">
             <a href="{% url 'homestay:index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
             <a href="{% url 'homestay:room_list' %}" class="{% if request.resolver_match.url_name == 'homestay:room_list' %}active{% endif %}">Rooms</a>
-            <a href="{% url 'myresto:resto_list' %}" class="{% if request.resolver_match.url_name == 'resto_list' %}active{% endif %}">Restaurant</a>
+            <a href="{% url 'myresto:restaurant_list' %}" class="{% if request.resolver_match.url_name == 'resto_list' %}active{% endif %}">Restaurant</a>
             <a href="{% url 'homestay:contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
         </nav>
         <!-- Tiga Titik Menu untuk Tampilan Kecil -->

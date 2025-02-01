@@ -2,20 +2,21 @@
 {% load static %}
 
 {% block content %}
-<section class="hero text-center py-5 bg-primary text-white">
-    <div class="hero-overlay"></div> <!-- Overlay -->
+<section class="hero text-center py-5 reveal-left"
+    style="background: url('{% static 'image/4.png' %}')">
+    <div class="hero-overlay"></div>
     <div class="hero-content container">
         <h1 class="hero-title display-4">Our Rooms</h1>
         <p class="hero-subtitle lead">Discover your perfect stay with us</p>
     </div>
 </section>
 
-<section class="rooms-container py-5">
+<section class="rooms-container py-5 reveal-right">
     <div class="container">
         <div class="row g-4">
             {% for room in rooms %}
-            <div class="col-md-4">
-                <div class="card shadow-sm">
+            <div class="col-md-4 reveal">
+                <div class="card shadow-sm ">
                     <div class="card-img-top">
                         {% if room.image %}
                         <img src="{{ room.image.url }}" alt="{{ room.name }}" class="img-fluid rounded-top" style="object-fit: cover; width: 100%;">
@@ -35,7 +36,7 @@
         </div>
 
         <!-- Pagination Controls -->
-        <div class="d-flex justify-content-center mt-4">
+        <div class="d-flex justify-content-center mt-4 reveal-left">
             {% if rooms.has_previous %}
                 <a href="?page=1&q={{ request.GET.q }}" class="btn btn-secondary">First</a>
                 <a href="?page={{ rooms.previous_page_number }}&q={{ request.GET.q }}" class="btn btn-secondary">Previous</a>

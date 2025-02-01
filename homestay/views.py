@@ -1,9 +1,8 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
 from django.views.generic import ListView, DetailView, FormView, TemplateView
-from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib import messages
-from .models import Room, Booking, MenuItem
+from .models import Room, Wisata, FotoWisata
 from .forms import ContactForm, ReservationForm
 
 class IndexView(TemplateView):
@@ -55,19 +54,10 @@ class ReservationView(FormView):
         messages.success(self.request, "Reservasi Anda berhasil dibuat!")
         return redirect('reservation')
 
-class RestaurantListView(ListView):
-    model = MenuItem
-    template_name = 'resto/resto_list.html'
-    context_object_name = 'items'
-    paginate_by = 6  # Adjust as needed
-
-    def get_queryset(self):
-        queryset = super().get_queryset()
-        query = self.request.GET.get('q')
-
-        if query:
-            queryset = queryset.filter(
-                Q(name__icontains=query) | Q(description__icontains=query)
-            )
-
-        return queryset.order_by('name')  # Or use another ordering field if needed
+def wisata_list(request):
+    wisata = Wisata.objects.first()  # Ambil satu data wisata
+    galeri_foto = FotoWisata.objects.filter(wisata=wisata)  # Ambil foto-foto wisata
+    return render(request, 'homestay/wisata_list.html', {
+        'wisata': wisata,
+        'galeri_foto': galeri_foto
+    })

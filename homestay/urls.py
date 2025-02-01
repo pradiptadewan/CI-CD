@@ -2,8 +2,8 @@ from django.urls import path
 
 from . import views
 from .views import (
-    IndexView, RoomListView, RoomDetailView,
-    ContactView, ReservationView, RestaurantListView
+    RoomListView, RoomDetailView,
+    ContactView, ReservationView
 )
 
 app_name = 'homestay'
@@ -13,5 +13,5 @@ urlpatterns = [
     path('rooms/<int:pk>/', RoomDetailView.as_view(), name='room_detail'),
     path('contact/', ContactView.as_view(), name='contact'),
     path('reservation/', ReservationView.as_view(), name='reservation'),
-    path('restaurants/', RestaurantListView.as_view(), name='restaurant_list'),
+    path('list/', views.wisata_list, name='wisata_list'),
 ]
