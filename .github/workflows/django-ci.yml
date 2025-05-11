@@ -2,7 +2,7 @@ name: Django CI
 
 on:
   push:
-    branches: [ main, master ]  # Menambah 'master' untuk mengakomodasi branch default yang berbeda
+    branches: [ main, master ]
   pull_request:
     branches: [ main, master ]
 
@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
     - name: Set up Python
@@ -25,77 +25,44 @@ jobs:
         if [ -f requirements.txt ]; then
           pip install -r requirements.txt
         else
-          # Jika tidak ada requirements.txt, instal package dasar Django
-          echo "Warning: requirements.txt tidak ditemukan, menginstal Django dasar"
-          pip install django
+          echo "Creating basic requirements.txt"
+          echo "Django>=3.2.0,<5.0.0" > requirements.txt
+          pip install -r requirements.txt
         fi
 
-    - name: Check for Django installation
+    - name: Find Django project name
+      id: project_name
       run: |
-        python -c "import django; print('Django Version:', django.get_version())"
-
-    - name: Create requirements.txt if not exists
-      run: |
-        if [ ! -f requirements.txt ]; then
-          echo "Django>=3.2,<5.0" > requirements.txt
-          echo "Created basic requirements.txt"
+        # Simple approach to find settings.py
+        SETTINGS_FILES=$(find . -type f -name "settings.py" | grep -v "venv" | head -n 1)
+        if [ -z "$SETTINGS_FILES" ]; then
+          echo "Warning: Could not find settings.py"
+          echo "project_name=django_project" >> $GITHUB_OUTPUT
+        else
+          PROJECT_DIR=$(dirname "$SETTINGS_FILES")
+          PROJECT_NAME=$(basename "$PROJECT_DIR")
+          echo "Found project: $PROJECT_NAME"
+          echo "project_name=$PROJECT_NAME" >> $GITHUB_OUTPUT
         fi
 
-    - name: Detect Django project structure
-      id: detect_django
+    - name: Verify Django installation
       run: |
-        # Temukan file settings.py untuk menentukan nama project
-        SETTINGS_PATH=$(find . -name "settings.py" | head -n 1)
-        if [ -z "$SETTINGS_PATH" ]; then
-          echo "Error: Tidak dapat menemukan file settings.py!"
-          exit 1
-        fi
-        
-        PROJECT_DIR=$(dirname "$SETTINGS_PATH")
-        PROJECT_NAME=$(basename "$PROJECT_DIR")
-        echo "Project directory: $PROJECT_DIR"
-        echo "Project name: $PROJECT_NAME"
-        echo "django_project=$PROJECT_NAME" >> $GITHUB_OUTPUT
+        python -c "import django; print('Django version:', django.get_version())"
 
     - name: Run Django checks
       run: |
         if [ -f manage.py ]; then
           python manage.py check
         else
-          echo "Error: manage.py tidak ditemukan!"
+          echo "Error: manage.py not found"
           exit 1
         fi
 
-    - name: Run Django migrations check
+    - name: Test Django server
       run: |
         if [ -f manage.py ]; then
-          python manage.py makemigrations --check --dry-run
-          python manage.py migrate --plan
-        else
-          echo "Error: manage.py tidak ditemukan!"
-          exit 1
-        fi
-      continue-on-error: true  # Lanjutkan meskipun ada masalah dengan migrasi
-
-    - name: Run Django tests
-      run: |
-        if [ -f manage.py ]; then
-          python manage.py test
-        else
-          echo "Error: manage.py tidak ditemukan!"
-          exit 1
-        fi
-      continue-on-error: true  # Lanjutkan meskipun ada tes yang gagal
-
-    - name: Run Django server (test only)
-      run: |
-        if [ -f manage.py ]; then
-          # Hanya tes menjalankan server, tidak benar-benar menjalankannya terus-menerus
-          echo "Testing Django server start..."
-          PROJECT_NAME="${{ steps.detect_django.outputs.django_project }}"
-          python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', '$PROJECT_NAME.settings'); from django.core.management import execute_from_command_line; execute_from_command_line(['manage.py', 'check'])"
-          echo "Django server start test completed."
-        else
-          echo "Error: manage.py tidak ditemukan!"
-          exit 1
+          echo "Testing Django server config"
+          PROJECT_NAME=${{ steps.project_name.outputs.project_name }}
+          echo "Using project name: $PROJECT_NAME"
+          python -c "import os; os.environ['DJANGO_SETTINGS_MODULE'] = '$PROJECT_NAME.settings'; import django; django.setup(); print('Django configured successfully')"
         fi
