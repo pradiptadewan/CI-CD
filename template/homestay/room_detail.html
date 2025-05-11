@@ -1,51 +1,173 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Detail Kamar - {{ room.name }}{% endblock %}
+{% block title %}{{ room.name }} - Luxury Room Details{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-    <div class="row">
-        <div class="col-md-8">
-            <!-- Menampilkan nama kamar dan tipe -->
-            <h1 class="mb-4">{{ room.name }}</h1>
-            <p class="lead"><strong>Tipe:</strong> {{ room.room_type }}</p>
-            <p class="lead"><strong>Kapasitas:</strong> {{ room.capacity }} orang</p>
-            <p class="lead"><strong>Harga per malam:</strong> Rp{{ room.price|floatformat:0 }}</p>
-
-            <!-- Deskripsi kamar -->
-            <p><strong>Deskripsi:</strong> {{ room.description }}</p>
-
-            <!-- Fasilitas kamar -->
-            <h3 class="mb-3">Fasilitas:</h3>
-            <ul class="list-group mb-4">
-                {% for facility in room.facilities.all %}
-                    <li class="list-group-item">{{ facility }}</li>
-                {% endfor %}
-            </ul>
-
-            <!-- Gambar kamar -->
-            <h3 class="mb-3">Gambar Kamar:</h3>
-            {% if room.image %}
-                <img src="{{ room.image.url }}" alt="Room Image" class="img-fluid rounded shadow mb-4">
-            {% else %}
-                <p>No image available.</p>
-            {% endif %}
-
-            <!-- Tombol Kembali ke Daftar Kamar -->
-            <a href="{% url 'homestay:room_list' %}" class="btn btn-primary btn-lg">Kembali ke Daftar Kamar</a>
-        </div>
-
-        <div class="col-md-4">
-            <!-- Menampilkan rekomendasi kamar lain -->
-            <h3 class="mb-4">Kamar Lainnya yang Tersedia</h3>
-            <ul class="list-group">
-                {% for other_room in other_rooms %}
-                    <li class="list-group-item">
-                        <a href="{% url 'homestay:room_detail' pk=other_room.pk %}" class="text-decoration-none">{{ other_room.name }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
+<!-- Hero Section -->
+<section class="hero position-relative" style="height: 60vh; background: url('{% static 'image/room1.jpeg' %}') no-repeat center center/cover;">
+    <div class="hero-overlay position-absolute w-100 h-100"
+         style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));">
+    </div>
+    <div class="container h-100">
+        <div class="row h-100 align-items-center">
+            <div class="col-lg-8 mx-auto text-center position-relative">
+                <h1 class="display-3 text-white fw-bold mb-3">{{ room.name }}</h1>
+                <p class="lead text-white mb-4 fw-light">Experience Unparalleled Luxury and Comfort</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill">
+                        <i class="fas fa-user-friends me-2"></i>{{ room.capacity }} Guests
+                    </span>
+                    <span class="badge bg-success px-3 py-2 rounded-pill">
+                        <i class="fas fa-tag me-2"></i>{{ room.room_type }}
+                    </span>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</section>
+
+<!-- Room Details Section -->
+<section class="py-5" style="background-color: #f8f9fa;">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Room Gallery -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                    <div id="roomCarousel" class="carousel slide" data-bs-ride="carousel">
+                        <!-- Carousel Indicators -->
+                        <div class="carousel-indicators">
+                            {% for image in images %}
+                                <button type="button" data-bs-target="#roomCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                                    class="{% if forloop.first %}active{% endif %}"
+                                    aria-current="true" aria-label="Slide {{ forloop.counter }}">
+                                </button>
+                            {% endfor %}
+                        </div>
+
+                        <div class="carousel-inner">
+                            {% if images %}
+                                {% for image in images %}
+                                    <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                                        <img src="{{ image.image.url }}" alt="{{ room.name }}"
+                                             class="d-block w-100" style="height: 400px; object-fit: cover;">
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="carousel-item active">
+                                    <img src="{% static 'default_room.jpg' %}" alt="No Image Available"
+                                         class="d-block w-100" style="height: 400px; object-fit: cover;">
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Carousel Controls -->
+                        <button class="carousel-control-prev" type="button" data-bs-target="#roomCarousel" data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#roomCarousel" data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+
+                    <!-- Room Details -->
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <h2 class="h3 fw-bold mb-0">{{ room.name }}</h2>
+                            <div class="price-badge">
+                                <h3 class="text-success mb-0">
+                                    <small class="text-muted">Starting from</small><br>
+                                    Rp{{ room.price|floatformat:0 }}<small class="text-muted">/night</small>
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div class="room-description mb-4">
+                            <p class="lead text-muted">{{ room.description }}</p>
+                        </div>
+
+                        <!-- Facilities -->
+                        <div class="facilities-section">
+                            <h4 class="mb-4 fw-bold">
+                                <i class="fas fa-concierge-bell me-2 text-primary"></i>Room Facilities
+                            </h4>
+                            <div class="row g-3">
+                                {% for facility in facilities %}
+                                    <div class="col-md-6">
+                                        <div class="d-flex align-items-center p-3 bg-light rounded-3">
+                                            <i class="fa {{ facility.icon }} fa-lg me-3 text-primary"></i>
+                                            <span class="fw-medium">{{ facility.name }}</span>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Booking Button -->
+                        <div class="mt-4 text-center">
+                            <a href="{% url 'homestay:reservation' %}?room_id={{ room.pk }}"
+                               class="btn btn-primary btn-lg px-5 py-3 rounded-pill">
+                                <i class="fas fa-calendar-check me-2"></i>Book Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <!-- Other Rooms -->
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden mb-4">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h3 class="h5 mb-0 text-center fw-bold">Other Available Rooms</h3>
+                    </div>
+                    <div class="card-body p-0">
+                        {% for other_room in other_rooms %}
+                            <div class="p-3 border-bottom {% if forloop.last %}border-0{% endif %}">
+                                <div class="d-flex align-items-center">
+                                    {% if other_room.room_images.all %}
+                                        <img src="{{ other_room.room_images.first.image.url }}"
+                                             alt="{{ other_room.name }}"
+                                             class="rounded-3 me-3"
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                    {% else %}
+                                        <img src="{% static 'default_room.jpg' %}"
+                                             alt="No Image Available"
+                                             class="rounded-3 me-3"
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="mb-1">
+                                            <a href="{% url 'homestay:room_detail' pk=other_room.pk %}"
+                                               class="text-decoration-none text-dark fw-bold">
+                                                {{ other_room.name }}
+                                            </a>
+                                        </h6>
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <span class="badge bg-secondary">{{ other_room.room_type }}</span>
+                                            <span class="text-success fw-bold">
+                                                Rp{{ other_room.price|floatformat:0 }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Back to Rooms -->
+                <div class="text-center">
+                    <a href="{% url 'homestay:room_list' %}"
+                       class="btn btn-outline-primary rounded-pill px-4 py-2">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Room List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

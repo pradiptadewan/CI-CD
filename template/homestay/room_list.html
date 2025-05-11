@@ -2,50 +2,169 @@
 {% load static %}
 
 {% block content %}
-<section class="hero text-center py-5 reveal-left"
-    style="background: url('{% static 'image/4.png' %}')">
-    <div class="hero-overlay"></div>
-    <div class="hero-content container">
-        <h1 class="hero-title display-4">Our Rooms</h1>
-        <p class="hero-subtitle lead">Discover your perfect stay with us</p>
+<!-- Hero Section -->
+<section class="hero position-relative text-center py-5 reveal-left"
+    style="background: url('{% static 'image/4.png' %}') no-repeat center center/cover; min-height: 60vh;">
+    <div class="hero-overlay position-absolute top-0 start-0 w-100 h-100"
+        style="background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7));"></div>
+    <div class="hero-content container position-relative z-1 py-5">
+        <h1 class="hero-title display-3 text-white mb-4 fw-bold">Discover Our Rooms</h1>
+        <p class="hero-subtitle lead text-white mb-4">Experience luxury and comfort in every stay</p>
     </div>
 </section>
 
+<!-- Rooms Grid Section -->
 <section class="rooms-container py-5 reveal-right">
     <div class="container">
+        <!-- Room Type Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-center flex-wrap gap-2">
+                    <a href="{% url 'homestay:room_list' %}"
+                        class="btn btn-outline-primary {% if not request.GET.type %}active{% endif %}">
+                        All Rooms
+                    </a>
+                    <!-- Add your room type filters here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Rooms Grid -->
         <div class="row g-4">
             {% for room in rooms %}
-            <div class="col-md-4 reveal">
-                <div class="card shadow-sm ">
-                    <div class="card-img-top">
-                        {% if room.image %}
-                        <img src="{{ room.image.url }}" alt="{{ room.name }}" class="img-fluid rounded-top" style="object-fit: cover; width: 100%;">
+            <div class="col-md-6 col-lg-4 reveal">
+                <div class="card h-100 shadow-sm hover-shadow-md transition-all rounded-4 border-0">
+                    <!-- Room Image -->
+                    <div class="position-relative">
+                        {% if room.room_images.all %}
+                            <img src="{{ room.room_images.first.image.url }}"
+                                alt="{{ room.name }}"
+                                class="card-img-top rounded-top-4"
+                                style="height: 250px; object-fit: cover;">
                         {% else %}
-                        <img src="{% static 'default_room.jpg' %}" alt="No Image Available" class="img-fluid rounded-top" style="object-fit: cover; width: 100%;">
+                            <img src="{% static 'default_room.jpg' %}"
+                                alt="No Image Available"
+                                class="card-img-top rounded-top-4"
+                                style="height: 250px; object-fit: cover;">
                         {% endif %}
+                        <div class="position-absolute top-0 end-0 p-3">
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                Available
+                            </span>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">{{ room.name }}</h5>
-                        <p class="card-text text-muted">{{ room.description|truncatewords:15 }}</p>
-                        <p class="card-text fw-bold">Price: Rp{{ room.price }}</p>
-                        <a href="{% url 'homestay:room_detail' room.id %}" class="btn btn-primary btn-sm">Lihat Detail</a>
+
+                    <!-- Room Details -->
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="card-title text-primary mb-0 fw-bold">{{ room.name }}</h5>
+                            <div class="price-badge">
+                                <span class="fw-bold text-primary">Rp{{ room.price|floatformat:0 }}</span>
+                                <small class="text-muted">/night</small>
+                            </div>
+                        </div>
+
+                        <p class="card-text text-muted mb-3">{{ room.description|truncatewords:15 }}</p>
+
+                        <!-- Room Features -->
+                        <div class="room-features mb-3">
+                            <span class="badge bg-light text-dark me-2">
+                                <i class="fas fa-user-friends me-1"></i> {{ room.capacity }} Guests
+                            </span>
+                            <span class="badge bg-light text-dark me-2">
+                                <i class="fas fa-bed me-1"></i> {{ room.room_type }}
+                            </span>
+                        </div>
+<div class="d-grid">
+    <a href="{% url 'homestay:room_detail' room.id %}"
+       class="btn btn-outline-primary custom-hover">
+        <span>View Details</span>
+        <i class="fas fa-arrow-right ms-2"></i>
+    </a>
+</div>
+
+<style>
+    .custom-hover span {
+        color: #FF5733; /* Warna default (orange) */
+    }
+
+    .custom-hover:hover span {
+        color: white; /* Warna saat hover (putih) */
+    }
+</style>
+
+
                     </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">No Rooms Found</h4>
+                    <p>We couldn't find any rooms matching your criteria. Try adjusting your search.</p>
                 </div>
             </div>
             {% endfor %}
         </div>
 
-        <!-- Pagination Controls -->
-        <div class="d-flex justify-content-center mt-4 reveal-left">
-            {% if rooms.has_previous %}
-                <a href="?page=1&q={{ request.GET.q }}" class="btn btn-secondary">First</a>
-                <a href="?page={{ rooms.previous_page_number }}&q={{ request.GET.q }}" class="btn btn-secondary">Previous</a>
-            {% endif %}
-            <span class="mx-2">Page {{ rooms.number }} of {{ rooms.paginator.num_pages }}</span>
-            {% if rooms.has_next %}
-                <a href="?page={{ rooms.next_page_number }}&q={{ request.GET.q }}" class="btn btn-secondary">Next</a>
-                <a href="?page={{ rooms.paginator.num_pages }}&q={{ request.GET.q }}" class="btn btn-secondary">Last</a>
-            {% endif %}
+        <!-- Pagination -->
+        {% if rooms.paginator.num_pages > 1 %}
+        <nav class="mt-5 reveal-left" aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if rooms.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1&q={{ request.GET.q }}" aria-label="First">
+                        <span aria-hidden="true">&laquo;&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ rooms.previous_page_number }}&q={{ request.GET.q }}"
+                        aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in rooms.paginator.page_range %}
+                    {% if num == rooms.number %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                    {% elif num > rooms.number|add:'-3' and num < rooms.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}&q={{ request.GET.q }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if rooms.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ rooms.next_page_number }}&q={{ request.GET.q }}"
+                        aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ rooms.paginator.num_pages }}&q={{ request.GET.q }}"
+                        aria-label="Last">
+                        <span aria-hidden="true">&raquo;&raquo;</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Room Count Summary -->
+<section class="bg-light py-4">
+    <div class="container">
+        <div class="text-center text-muted">
+            <small>
+                Showing {{ rooms.start_index }}-{{ rooms.end_index }}
+                of {{ rooms.paginator.count }} rooms available
+            </small>
         </div>
     </div>
 </section>

@@ -30,10 +30,22 @@ class RoomListView(ListView):
         # Menambahkan urutan yang jelas untuk pagination
         return queryset.order_by('name')  # Atau berdasarkan field lain yang diinginkan
 
+
 class RoomDetailView(DetailView):
     model = Room
-    template_name = 'homestay/room_detail.html'  # Template untuk halaman detail
-    context_object_name = 'room'  # Nama variabel untuk data di template
+    template_name = 'homestay/room_detail.html'
+    context_object_name = 'room'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['facilities'] = self.object.facilities.all()  # Ambil fasilitas kamar
+        context['other_rooms'] = Room.objects.exclude(pk=self.object.pk)[:5]  # Kamar lain
+
+        # Mengambil gambar-gambar yang di-upload untuk kamar ini
+        context['images'] = self.object.room_images.all()  # Menggunakan related_name yang benar
+
+        return context
+
 
 
 class ContactView(FormView):
@@ -49,10 +61,21 @@ class ReservationView(FormView):
     template_name = 'homestay/reservation.html'
     form_class = ReservationForm
 
+    def get_initial(self):
+        initial = super().get_initial()
+        room_id = self.request.GET.get('room_id')
+        if room_id:
+            try:
+                room = Room.objects.get(pk=room_id)
+                initial['room'] = room
+            except Room.DoesNotExist:
+                pass
+        return initial
+
     def form_valid(self, form):
-        form.save()  # Simpan data reservasi ke database
+        form.save()
         messages.success(self.request, "Reservasi Anda berhasil dibuat!")
-        return redirect('reservation')
+        return redirect('homestay:reservation')
 
 def wisata_list(request):
     wisata = Wisata.objects.first()  # Ambil satu data wisata

@@ -2,54 +2,106 @@
 {% load static %}
 
 {% block content %}
-
 <!-- Hero Section -->
-<div class="hero">
-    <div class="hero-overlay">
-        <h1 class="hero-title">Welcome to Our Hotel</h1>
-        <p class="hero-subtitle">Book your stay and enjoy luxurious comfort</p>
-        <div>
-            <a href="#reservation" class="btn btn-primary">Make a Reservation</a>
-            <a href="#features" class="btn btn-secondary">Learn More</a>
+<section class="hero text-center py-5" style="background: url('{% static 'image/hero-bg.jpg' %}') no-repeat center center/cover;">
+    <div class="hero-overlay" style="background: rgba(0, 0, 0, 0.6);">
+        <div class="container py-5">
+            <h1 class="display-4 text-white mb-3">Book Your Stay</h1>
+            <p class="lead text-white">Find the perfect room for your dream vacation</p>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Reservation Form Section -->
-<div id="reservation" class="container py-5 mt-5"> <!-- Added an ID for smooth scrolling -->
-    <h2 class="text-center mb-4">Reservation</h2>
-    <form action="{% url 'homestay:reservation' %}" method="post" class="reservation-form">
-        {% csrf_token %}
-        <div class="form-group mb-3">
-            <label for="name">Your Name</label>
-            <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required>
-        </div>
-        <div class="form-group mb-3">
-            <label for="email">Your Email</label>
-            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
-        </div>
-        <div class="form-row row mb-3">
-            <div class="col-md-6">
-                <label for="checkin">Check-in Date</label>
-                <input type="date" name="checkin" id="checkin" class="form-control" required>
-            </div>
-            <div class="col-md-6">
-                <label for="checkout">Check-out Date</label>
-                <input type="date" name="checkout" id="checkout" class="form-control" required>
-            </div>
-        </div>
-        <div class="form-group mb-3">
-            <label for="room">Select Room</label>
-            <select name="room" id="room" class="form-control" required>
-                {% for room in rooms %}
-                <option value="{{ room.pk }}">{{ room.name }} - Rp{{ room.price }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="text-center">
-            <button type="submit" class="btn btn-primary btn-lg">Reserve Now</button>
-        </div>
-    </form>
-</div>
+<!-- Booking Form Section -->
+<section class="reservation-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h2 class="card-title text-center mb-4 fw-bold">Reservation Form</h2>
 
+                        <form action="{% url 'homestay:reservation' %}" method="post" class="needs-validation" novalidate>
+                            {% csrf_token %}
+
+                            <div class="row g-4">
+                                <!-- Personal Information -->
+                                <div class="col-12">
+                                    <h5 class="text-muted mb-3">Personal Information</h5>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" name="name" id="name" class="form-control" placeholder="Enter your name" required>
+                                        <label for="name">Full Name</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email" required>
+                                        <label for="email">Email Address</label>
+                                    </div>
+                                </div>
+
+                                <!-- Booking Details -->
+                                <div class="col-12">
+                                    <h5 class="text-muted mb-3">Booking Details</h5>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="date" name="checkin" id="checkin" class="form-control" required>
+                                        <label for="checkin">Check-in Date</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating mb-3">
+                                        <input type="date" name="checkout" id="checkout" class="form-control" required>
+                                        <label for="checkout">Check-out Date</label>
+                                    </div>
+                                </div>
+
+                                <!-- Room Selection -->
+                                <div class="col-12">
+                                    <div class="form-floating mb-4">
+                                        <select name="room" id="id_room" class="form-select" {% if form.initial.room %}disabled{% endif %} required>
+                                            {% for room in form.fields.room.queryset %}
+                                                <option value="{{ room.id }}"
+                                                    {% if form.initial.room.id == room.id %}selected{% endif %}>
+                                                    {{ room.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                        <label for="id_room">Select Room</label>
+                                        {% if form.initial.room %}
+                                            <input type="hidden" name="room" value="{{ form.initial.room.id }}">
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="col-12">
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-primary btn-lg py-3">
+                                            Complete Reservation
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Additional Information -->
+                <div class="text-center mt-4">
+                    <p class="text-muted">
+                        <small>Need help? Contact our support team at support@yourhomestay.com</small>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

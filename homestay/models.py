@@ -13,7 +13,6 @@ class Room(models.Model):
     capacity = models.PositiveIntegerField(validators=[MinValueValidator(1)], verbose_name='Capacity')  # Kapasitas kamar
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Price per Night')  # Harga per malam
     is_available = models.BooleanField(default=True, verbose_name='Available')  # Status ketersediaan
-    image = models.ImageField(upload_to='room_images/', blank=True, null=True, verbose_name='Room Image')  # Gambar kamar
     facilities = models.ManyToManyField('Facility', blank=True, related_name='rooms', verbose_name='Facilities')  # Fasilitas kamar
 
     def __str__(self):
@@ -22,8 +21,19 @@ class Room(models.Model):
     def formatted_price(self):
         return f"Rp{self.price:,.0f}"  # Format harga tanpa desimal
 
+
+class RoomImage(models.Model):
+    room = models.ForeignKey(Room, related_name='room_images', on_delete=models.CASCADE, verbose_name='Room')  # Hubungkan dengan room
+    image = models.ImageField(upload_to='room_images/', verbose_name='Room Image')  # Gambar kamar
+    description = models.CharField(max_length=255, blank=True, null=True, verbose_name='Image Description')  # Deskripsi gambar
+
+    def __str__(self):
+        return f"Image of {self.room.name}"
+
+
 class Facility(models.Model):
     name = models.CharField(max_length=100, verbose_name='Facility Name')  # Nama fasilitas
+    icon = models.CharField(max_length=50, blank=True, null=True, verbose_name='Icon Class')
 
     def __str__(self):
         return self.name

@@ -13,10 +13,18 @@
     <header>
         <div class="logo">Joglo Dhepis</div>
         <nav class="navbar">
-            <a href="{% url 'homestay:index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">Home</a>
-            <a href="{% url 'homestay:room_list' %}" class="{% if request.resolver_match.url_name == 'homestay:room_list' %}active{% endif %}">Rooms</a>
-            <a href="{% url 'myresto:restaurant_list' %}" class="{% if request.resolver_match.url_name == 'resto_list' %}active{% endif %}">Restaurant</a>
-            <a href="{% url 'homestay:contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">Contact</a>
+            <a href="{% url 'homestay:index' %}" class="{% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                <i class="fas fa-home"></i> Home
+            </a>
+            <a href="{% url 'homestay:room_list' %}" class="{% if request.resolver_match.url_name == 'room_list' %}active{% endif %}">
+                <i class="fas fa-bed"></i> Rooms
+            </a>
+            <a href="{% url 'myresto:restaurant_list' %}" class="{% if request.resolver_match.url_name == 'restaurant_list' %}active{% endif %}">
+                <i class="fas fa-utensils"></i> Restaurant
+            </a>
+            <a href="{% url 'homestay:contact' %}" class="{% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+                <i class="fas fa-envelope"></i> Contact
+            </a>
         </nav>
         <!-- Tiga Titik Menu untuk Tampilan Kecil -->
         <div class="menu-toggle" onclick="toggleNavbar()">
@@ -30,15 +38,63 @@
         {% endblock %}
     </main>
 
-    <footer>
-        <p>&copy; 2025 Joglo Dhepis | Homestay & Resto</p>
-        <div class="social-icons">
-            <a href="https://wa.me/yourphone" target="_blank"><i class="fab fa-whatsapp"></i></a>
-            <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-            <a href="https://maps.google.com/?q=your-location" target="_blank"><i class="fas fa-map-marker-alt"></i></a>
+ <footer>
+    <div class="footer-container">
+        <div class="footer-section about">
+            <div class="footer-logo">
+                <img src="{% static 'image/logo.png' %}" alt="joglo">
+                <h3>HOMESTAY JOGLODHEPIS</h3>
+            </div>
+            <p>Info lengkap mengenai Homestay Joglo Dhepis Borobudur dan layanan lainnya.</p>
+            <div class="footer-social-icons">
+                <a href="#"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
         </div>
-    </footer>
+        <div class="footer-section services">
+            <h4>Layanan</h4>
+            <ul>
+                <li>Pemesanan Online</li>
+                <li>Bayar di Tempat</li>
+                <li>Upgrade Kamar</li>
+                <li>View Wisata</li>
+                <li>Rumah Makan</li>
+            </ul>
+        </div>
+        <div class="footer-section contact">
+            <h4>Hubungi Kami</h4>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <div class="contact-info">
+                    <span>No WhatsApp</span>
+                    <p>+6285801262682</p>
+                </div>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <div class="contact-info">
+                    <span>Email</span>
+                    <p>joglodhepis1@gmail.com</p>
+                </div>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <div class="contact-info">
+                    <span>Lokasi</span>
+                    <p>JogloDhepis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</footer>
 
+
+    <div class="footer-bottom">
+        <p><b>&copy; 2025 Homestay JogloDhepis.</b></p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         function toggleNavbar() {
             const navbar = document.querySelector('.navbar');
